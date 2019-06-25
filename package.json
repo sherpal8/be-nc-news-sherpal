@@ -5,13 +5,10 @@
   "main": "index.js",
   "scripts": {
     "setup-dbs": "psql -f ./db/setup.sql",
-    "seed": "knex seed:run",
-    "seed-test": "NODE_ENV=test npm run seed",
-    "query": "psql -f query.sql > output.txt",
+    "seed-test": "NODE_ENV=test knex seed:run",
     "mocha-test": "mocha spec/app.spec.js",
-    "test": "npm run seed-test && npm run setup-dbs && npm run mocha-test && npm run query",
-    "migrate-latest": "npx knex migrate:latest",
-    "migrate-rollback": "npx knex migrate:rollback",
+    "query": "psql -f query.sql > output.txt",
+    "test": "npm run setup-dbs && npm run seed-test && npm run mocha-test && npm run query",
     "test-utils": "mocha spec/utils.spec.js"
   },
   "repository": {
