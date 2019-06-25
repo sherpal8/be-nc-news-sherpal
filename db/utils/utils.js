@@ -14,4 +14,15 @@ exports.makeRefObj = list => {
   return obj;
 };
 
-exports.formatComments = (comments, articleRef) => {};
+exports.formatComments = (comments, articleRef) => {
+  // map through every element (object) in array
+  return comments.map(comment => {
+    return {
+      body: comment.body,
+      article_id: articleRef[comment.belongs_to],
+      author: comment.created_by,
+      votes: comment.votes,
+      created_at: `${new Date(comment.created_at).toUTCString()}`
+    };
+  });
+};

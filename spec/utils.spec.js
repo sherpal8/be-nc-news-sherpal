@@ -50,18 +50,65 @@ describe("formatDate", () => {
   });
 });
 
-describe.only("makeRefObj", () => {
+describe("makeRefObj", () => {
   it("returns an empty object when given an empty array", () => {
     expect(makeRefObj([])).to.eql({});
   });
   it("When given a single element array of object (with keys of article_id & title); function returns a key of an item's title with the value being its article_id", () => {
     expect(makeRefObj([{ article_id: 1, title: "A" }])).to.eql({ A: 1 });
   });
-  it("When given a multi-element array of objects (with keys of article_id & corresponding title); function returns an object. The object has a keys of a item(s) titles with the value being its associated article_id", () => {
+  it("When given a multi-element array of objects (with keys of article_id & corresponding title); the function returns an object. The object has a keys of item(s) titles with the value being its associated article_id", () => {
     expect(
       makeRefObj([{ article_id: 1, title: "A" }, { article_id: 2, title: "B" }])
     ).to.eql({ A: 1, B: 2 });
   });
 });
 
-describe("formatComments", () => {});
+describe("formatComments", () => {
+  it("returns an empty array when given an empty array of comment", () => {
+    let comments = [];
+    expect(formatComments(comments)).to.eql([]);
+  });
+  it("returns original array of objects with 2 key names changed. First key name to change: created_by to author. Second key name to change: belongs_to to article_id", () => {
+    let comments = [
+      {
+        body: "The owls are not what they seem.",
+        belongs_to: "B",
+        created_by: "icellusedkars",
+        votes: 20,
+        created_at: 1006778163389
+      }
+    ];
+    let articleRef = { B: 2 };
+    expect(formatComments(comments, articleRef)).to.eql([
+      {
+        body: "The owls are not what they seem.",
+        article_id: 2,
+        author: "icellusedkars",
+        votes: 20,
+        created_at: "Mon, 26 Nov 2001 12:36:03 GMT"
+      }
+    ]);
+  });
+  it("value of article_id corresponds to original title value provided", () => {
+    let comments = [
+      {
+        body: "The owls are not what they seem.",
+        belongs_to: "B",
+        created_by: "icellusedkars",
+        votes: 20,
+        created_at: 1006778163389
+      }
+    ];
+    let articleRef = { B: 2 };
+    expect(formatComments(comments, articleRef)).to.eql([
+      {
+        body: "The owls are not what they seem.",
+        article_id: 2,
+        author: "icellusedkars",
+        votes: 20,
+        created_at: "Mon, 26 Nov 2001 12:36:03 GMT"
+      }
+    ]);
+  });
+});
