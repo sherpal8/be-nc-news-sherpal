@@ -2,7 +2,7 @@ const { expect } = require("chai");
 const { formatDate, makeRefObj, formatComments } = require("../db/utils/utils");
 
 describe("formatDate", () => {
-  it("returns empty array when given empty array", () => {
+  it("returns new empty array when given empty array", () => {
     const input = [];
     expect(formatDate(input)).to.eql([]);
   });
@@ -50,6 +50,18 @@ describe("formatDate", () => {
   });
 });
 
-describe("makeRefObj", () => {});
+describe.only("makeRefObj", () => {
+  it("returns an empty object when given an empty array", () => {
+    expect(makeRefObj([])).to.eql({});
+  });
+  it("When given a single element array of object (with keys of article_id & title); function returns a key of an item's title with the value being its article_id", () => {
+    expect(makeRefObj([{ article_id: 1, title: "A" }])).to.eql({ A: 1 });
+  });
+  it("When given a multi-element array of objects (with keys of article_id & corresponding title); function returns an object. The object has a keys of a item(s) titles with the value being its associated article_id", () => {
+    expect(
+      makeRefObj([{ article_id: 1, title: "A" }, { article_id: 2, title: "B" }])
+    ).to.eql({ A: 1, B: 2 });
+  });
+});
 
 describe("formatComments", () => {});
