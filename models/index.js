@@ -13,16 +13,14 @@ exports.fetchUser = username => {
 
 exports.fetchArticle = article_id => {
   return connection
-    .select("*")
+    .select("articles.*")
     .from("articles")
-    .where({ article_id });
-};
-
-exports.fetchCommentsList = article_id => {
-  return connection
-    .select("*")
-    .from("comments")
-    .where({ article_id });
+    .leftJoin("comments", "articles.article_id", "comments.article_id")
+    .count({ comment_count: "comments.comment_id" })
+    .groupBy("articles.article_id")
+    .modify(query => {
+      if (article_id) query.where({ "articles.article_id": article_id });
+    });
 };
 
 exports.updateArticleById = (article_id, inc_votes) => {

@@ -24,7 +24,7 @@ describe("/api", () => {
   after(() => {
     return connection.destroy();
   });
-  // GET:  /api/topics
+  // end-point: /api/topics
   describe("GET: /api/topics", () => {
     it("GET responds with 200", () => {
       return request.get("/api/topics").expect(200);
@@ -54,7 +54,7 @@ describe("/api", () => {
           expect(topics[0].slug).to.equal("mitch");
         });
     });
-    // 405 error handling for this end-point
+    // 405 error handling for this particular end-point
     it("Error 405: Invalid methods", () => {
       const invalidMethods = ["put", "patch", "post", "delete"];
       const methodPromises = invalidMethods.map(method => {
@@ -67,7 +67,7 @@ describe("/api", () => {
       return Promise.all(methodPromises);
     });
   });
-  // GET: /api/users/:username
+  // end-point: /api/users/:username
   describe("GET: /api/users/:username", () => {
     it("GET responds with 200", () => {
       return request.get("/api/users/rogersop").expect(200);
@@ -93,76 +93,96 @@ describe("/api", () => {
     it("404 returned when parametric value does not match data", () => {
       return request.get("/api/users/ballerina").expect(404);
     });
-  });
-  // GET: /api/articles/:article_id
-  describe("GET: /api/articles/:article_id", () => {
-    it("GET responds with a 200", () => {
-      return request.get("/api/articles/1").expect(200);
-    });
-    it("GET returns an object", () => {
-      return request
-        .get("/api/articles/1")
-        .expect(200)
-        .then(({ body: { article } }) => {
-          expect(article).to.be.an("object");
-        });
-    });
-    it("Test that returned object of the single-element array contains specified keys", () => {
-      return request
-        .get("/api/articles/1")
-        .expect(200)
-        .then(({ body: { article } }) => {
-          expect(article).to.contain.keys(
-            "author",
-            "title",
-            "article_id",
-            "body",
-            "topic",
-            "created_at",
-            "votes",
-            "comment_count"
-          );
-        });
-    });
-    // error handling 400 for GET: /api/articles/:article_id
-    it("400 returned when non-compatible parametric value entered e.g. string instead of a number", () => {
-      return request
-        .get("/api/articles/bubba")
-        .expect(400)
-        .then(({ body: { msg } }) => expect(msg).to.equal("Bad request"));
-    });
-    // error handling 404 for GET: /api/articles/:article_id
-    it("404 returned when parametric value enter does not contain data", () => {
-      return request
-        .get("/api/articles/300")
-        .expect(404)
-        .then(({ body: { msg } }) =>
-          expect(msg).to.equal("Page does not exist")
-        );
+    // 405 error handling for this particular end-point
+    it("Error 405: Invalid methods", () => {
+      const invalidMethods = ["put", "patch", "post", "delete"];
+      const methodPromises = invalidMethods.map(method => {
+        return request[method]("/api/users/rogersop")
+          .expect(405)
+          .then(({ body: { msg } }) => {
+            expect(msg).to.equal("Method not allowed");
+          });
+      });
+      return Promise.all(methodPromises);
     });
   });
-  // PATCH: /api/articles/:article_id
-  describe("PATCH: /api/articles/:article_id", () => {
-    it("PATCH responds with status 200 & data is updated", () => {
-      const newVote = 11;
-      return request
-        .patch("/api/articles/1")
-        .send({ inc_votes: newVote })
-        .expect(200)
-        .then(({ body: { article } }) => {
-          expect(article.votes).to.equal(111);
-        });
+  // end-point: /api/articles/:article_id
+  describe("End-point: /api/articles/:article_id", () => {
+    // GET
+    describe("GET: /api/articles/:article_id", () => {
+      it("GET responds with a 200", () => {
+        return request.get("/api/articles/1").expect(200);
+      });
+      it("GET returns an object", () => {
+        return request
+          .get("/api/articles/1")
+          .expect(200)
+          .then(({ body: { article } }) => {
+            expect(article).to.be.an("object");
+          });
+      });
+      it("Test that returned object of the single-element array contains specified keys", () => {
+        return request
+          .get("/api/articles/1")
+          .expect(200)
+          .then(({ body: { article } }) => {
+            expect(article).to.contain.keys(
+              "author",
+              "title",
+              "article_id",
+              "body",
+              "topic",
+              "created_at",
+              "votes",
+              "comment_count"
+            );
+          });
+      });
+      // error handling 400 for GET: /api/articles/:article_id
+      it("400 returned when non-compatible parametric value entered e.g. string instead of a number", () => {
+        return request
+          .get("/api/articles/bubba")
+          .expect(400)
+          .then(({ body: { msg } }) => expect(msg).to.equal("Bad request"));
+      });
     });
-    // error handling for PATCH above: /api/articles/:article_id
-    it.only("Status 400 for posting invalid value in the body", () => {
-      const newVote = "number";
-      return request
-        .patch("/api/articles/1")
-        .send({ inc_votes: newVote })
-        .expect(400)
-        .then(({ body: { msg } }) => {
-          expect(msg).to.equal("Bad request");
+    // PATCH
+    describe("PATCH: /api/articles/:article_id", () => {
+      it("PATCH responds with status 200 & data is updated", () => {
+        const newVote = 11;
+        return request
+          .patch("/api/articles/1")
+          .send({ inc_votes: newVote })
+          .expect(200)
+          .then(({ body: { article } }) => {
+            expect(article.votes).to.equal(111);
+          });
+      });
+      // error handling for PATCH above: /api/articles/:article_id
+      it("Status 400 for posting invalid value in the body", () => {
+        const newVote = "number";
+        return request
+          .patch("/api/articles/1")
+          .send({ inc_votes: newVote })
+          .expect(400)
+          .then(({ body: { msg } }) => {
+            expect(msg).to.equal("Bad request");
+          });
+      });
+    });
+    // 405 error handling - invalid methods
+    describe("Invalid methods", () => {
+      it("405 returned for invalid methods for this end-point", () => {
+        const invalidMethods = ["put", "post", "delete"];
+        const methodPromises = invalidMethods.map(method => {
+          return request[method]("/api/articles/1")
+            .expect(405)
+            .then(({ body: { msg } }) => {
+              expect(msg).to.equal("Method not allowed");
+            });
         });
+        return Promise.all(methodPromises);
+      });
     });
   });
 });
