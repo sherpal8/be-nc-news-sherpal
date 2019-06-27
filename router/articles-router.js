@@ -1,7 +1,18 @@
 const express = require("express");
 const articlesRouter = express.Router();
-const { getArticle, patchArticle } = require("../controllers");
+const {
+  getArticle,
+  patchArticle,
+  postComment,
+  getComments
+} = require("../controllers");
 const { errorHandler405 } = require("../errors");
+
+articlesRouter
+  .route("/:article_id/comments")
+  .post(postComment)
+  .get(getComments)
+  .all(errorHandler405);
 
 articlesRouter
   .route("/:article_id")

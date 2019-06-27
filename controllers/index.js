@@ -2,7 +2,9 @@ const {
   fetchTopics,
   fetchUser,
   fetchArticle,
-  updateArticleById
+  updateArticleById,
+  updateComments,
+  retrieveComments
 } = require("../models");
 
 exports.getTopics = (req, res, next) => {
@@ -32,18 +34,43 @@ exports.getArticle = (req, res, next) => {
   const { article_id } = req.params;
   fetchArticle(article_id)
     .then(([article]) => {
+      if (!article) {
+        return Promise.reject({ status: "404", msg: "Page does not exist" });
+      }
       res.status(200).send({ article });
     })
     .catch(next);
 };
 
 exports.patchArticle = (req, res, next) => {
-  let { inc_votes } = req.body;
-  let { article_id } = req.params;
+  const { inc_votes } = req.body;
+  const { article_id } = req.params;
 
   updateArticleById(article_id, inc_votes)
     .then(([article]) => {
       res.status(200).send({ article });
     })
     .catch(next);
+};
+
+exports.postComment = (req, res, next) => {
+  const { article_id } = req.params;
+  const { username, body } = req.body;
+
+  updateComments(article_id, username, body)
+    .then(([comment]) => {
+      if (!comment) {
+        return Promise.reject({ status: "404", msg: "Page does not exist" });
+      }
+      res.status(201).send({ comment });
+    })
+    .catch(next);
+};
+
+exports.getComments = (req, res, next) => {
+  const { article_id } = req.params;
+  const { sort_by, order } = req.query;
+  retrieveComments(article_id, sort_by, order).then(comments => {
+    res.status(200).send({ comments });
+  });
 };

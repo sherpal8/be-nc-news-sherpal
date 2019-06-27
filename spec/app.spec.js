@@ -25,85 +25,91 @@ describe("/api", () => {
     return connection.destroy();
   });
   // end-point: /api/topics
-  describe("GET: /api/topics", () => {
-    it("GET responds with 200", () => {
-      return request.get("/api/topics").expect(200);
-    });
-    it("GET returns an object with the key of 'topics' containing a value of an array of objects", () => {
-      return request
-        .get("/api/topics")
-        .expect(200)
-        .then(({ body: { endObject: { topics } } }) => {
-          expect(topics).to.be.an("array");
-        });
-    });
-    it("Test that element of array contains specified keys", () => {
-      return request
-        .get("/api/topics")
-        .expect(200)
-        .then(({ body: { endObject: { topics } } }) => {
-          expect(topics[0]).to.contain.keys("slug", "description");
-          expect(topics[0].slug).to.equal("mitch");
-        });
-    });
-    it("Test specific key value", () => {
-      return request
-        .get("/api/topics")
-        .expect(200)
-        .then(({ body: { endObject: { topics } } }) => {
-          expect(topics[0].slug).to.equal("mitch");
-        });
-    });
-    // 405 error handling for this particular end-point
-    it("Error 405: Invalid methods", () => {
-      const invalidMethods = ["put", "patch", "post", "delete"];
-      const methodPromises = invalidMethods.map(method => {
-        return request[method]("/api/topics")
-          .expect(405)
-          .then(({ body: { msg } }) => {
-            expect(msg).to.equal("Method not allowed");
+  describe("End-point: /api/topics", () => {
+    // GET
+    describe("GET: /api/topics", () => {
+      it("GET responds with 200", () => {
+        return request.get("/api/topics").expect(200);
+      });
+      it("GET returns an object with the key of 'topics' containing a value of an array of objects", () => {
+        return request
+          .get("/api/topics")
+          .expect(200)
+          .then(({ body: { endObject: { topics } } }) => {
+            expect(topics).to.be.an("array");
           });
       });
-      return Promise.all(methodPromises);
+      it("Test that element of array contains specified keys", () => {
+        return request
+          .get("/api/topics")
+          .expect(200)
+          .then(({ body: { endObject: { topics } } }) => {
+            expect(topics[0]).to.contain.keys("slug", "description");
+            expect(topics[0].slug).to.equal("mitch");
+          });
+      });
+      it("Test specific key value", () => {
+        return request
+          .get("/api/topics")
+          .expect(200)
+          .then(({ body: { endObject: { topics } } }) => {
+            expect(topics[0].slug).to.equal("mitch");
+          });
+      });
+      // 405 error handling for this particular end-point
+      it("Error 405: Invalid methods", () => {
+        const invalidMethods = ["put", "patch", "post", "delete"];
+        const methodPromises = invalidMethods.map(method => {
+          return request[method]("/api/topics")
+            .expect(405)
+            .then(({ body: { msg } }) => {
+              expect(msg).to.equal("Method not allowed");
+            });
+        });
+        return Promise.all(methodPromises);
+      });
     });
   });
   // end-point: /api/users/:username
-  describe("GET: /api/users/:username", () => {
-    it("GET responds with 200", () => {
-      return request.get("/api/users/rogersop").expect(200);
-    });
-    it("GET returns an object", () => {
-      return request
-        .get("/api/users/rogersop")
-        .expect(200)
-        .then(({ body: { user } }) => {
-          expect(user).to.be.an("object");
-        });
-    });
-    it("Test that element of array contains specified keys", () => {
-      return request
-        .get("/api/users/rogersop")
-        .expect(200)
-        .then(({ body: { user } }) => {
-          expect(user).to.contain.keys("username", "avatar_url", "name");
-          expect(user.name).to.equal("paul");
-        });
-    });
-    // error 404
-    it("404 returned when parametric value does not match data", () => {
-      return request.get("/api/users/ballerina").expect(404);
-    });
-    // 405 error handling for this particular end-point
-    it("Error 405: Invalid methods", () => {
-      const invalidMethods = ["put", "patch", "post", "delete"];
-      const methodPromises = invalidMethods.map(method => {
-        return request[method]("/api/users/rogersop")
-          .expect(405)
-          .then(({ body: { msg } }) => {
-            expect(msg).to.equal("Method not allowed");
+  describe("End-point: /api/users/:username", () => {
+    // GET
+    describe("GET: /api/users/:username", () => {
+      it("GET responds with 200", () => {
+        return request.get("/api/users/rogersop").expect(200);
+      });
+      it("GET returns an object", () => {
+        return request
+          .get("/api/users/rogersop")
+          .expect(200)
+          .then(({ body: { user } }) => {
+            expect(user).to.be.an("object");
           });
       });
-      return Promise.all(methodPromises);
+      it("Test that element of array contains specified keys", () => {
+        return request
+          .get("/api/users/rogersop")
+          .expect(200)
+          .then(({ body: { user } }) => {
+            expect(user).to.contain.keys("username", "avatar_url", "name");
+            expect(user.name).to.equal("paul");
+          });
+      });
+      // error 404
+      it("404 returned when parametric value does not match data", () => {
+        return request.get("/api/users/ballerina").expect(404);
+      });
+      // 405 error handling for this particular end-point
+      it("Error 405: Invalid methods", () => {
+        const invalidMethods = ["put", "patch", "post", "delete"];
+        const methodPromises = invalidMethods.map(method => {
+          return request[method]("/api/users/rogersop")
+            .expect(405)
+            .then(({ body: { msg } }) => {
+              expect(msg).to.equal("Method not allowed");
+            });
+        });
+        return Promise.all(methodPromises);
+      });
     });
   });
   // end-point: /api/articles/:article_id
@@ -145,6 +151,15 @@ describe("/api", () => {
           .expect(400)
           .then(({ body: { msg } }) => expect(msg).to.equal("Bad request"));
       });
+      // error handling 404 for GET: /api/articles/:article_id
+      it("404 returned when parametric value entered does not exist in data to allow for page retrieval", () => {
+        return request
+          .get("/api/articles/300")
+          .expect(404)
+          .then(({ body: { msg } }) =>
+            expect(msg).to.equal("Page does not exist")
+          );
+      });
     });
     // PATCH
     describe("PATCH: /api/articles/:article_id", () => {
@@ -176,6 +191,153 @@ describe("/api", () => {
         const invalidMethods = ["put", "post", "delete"];
         const methodPromises = invalidMethods.map(method => {
           return request[method]("/api/articles/1")
+            .expect(405)
+            .then(({ body: { msg } }) => {
+              expect(msg).to.equal("Method not allowed");
+            });
+        });
+        return Promise.all(methodPromises);
+      });
+    });
+  });
+  // end-point: /api/articles/:article_id/comments
+  describe("End-point: /api/articles/:article_id/comments", () => {
+    // POST for /api/articles/:article_id/comments
+    describe("POST at /api/articles/:article_id/comments", () => {
+      it("201 status when successful POST made", () => {
+        return request
+          .post("/api/articles/1/comments")
+          .send({ username: "rogersop", body: "Hey ya'll" })
+          .expect(201);
+      });
+      it("201 returns an object with key and values of updated comment entry", () => {
+        return request
+          .post("/api/articles/1/comments")
+          .send({ username: "rogersop", body: "Hey ya'll" })
+          .expect(201)
+          .then(({ body: { comment } }) => {
+            expect(comment).to.eql({
+              comment_id: 2,
+              author: "rogersop",
+              article_id: 1,
+              votes: 14,
+              created_at: "2016-11-22T12:36:03.000Z",
+              body: "Hey ya'll"
+            });
+          });
+      });
+      // error handling
+      it("400 error if article id is not a number", () => {
+        return request
+          .post("/api/articles/b/comments")
+          .send({ username: "rogersop", body: "hey" })
+          .expect(400)
+          .then(({ body: { msg } }) => {
+            expect(msg).to.equal("Bad request");
+          });
+      });
+      it("404 returned if article_id does not exist", () => {
+        return request
+          .post("/api/articles/100/comments")
+          .send({ username: "rogersop", body: "Hey ya'll" })
+          .expect(404)
+          .then(({ body: { msg } }) => {
+            expect(msg).to.equal("Page does not exist");
+          });
+      });
+      it("422 error if request body object contains unknown alien keys", () => {
+        return request
+          .post("/api/articles/1/comments")
+          .send({ unknownKey1: "rogersop", unknownKey2: "Hey" })
+          .expect(422)
+          .then(({ body: { msg } }) => {
+            expect(msg).to.equal("Unprocessable entity");
+          });
+      });
+    });
+    // GET method for /api/articles/:article_id/comments
+    describe("GET at /api/articles/:article_id/comments", () => {
+      it("GET returns a 200", () => {
+        return request.get("/api/articles/1/comments").expect(200);
+      });
+      it("GET returns an array of articles", () => {
+        return request
+          .get("/api/articles/1/comments")
+          .expect(200)
+          .then(({ body: { comments } }) => {
+            expect(Array.isArray(comments)).is.equal(true);
+          });
+      });
+      it("GET returns an array of articles, of which each commment/object should have following properties", () => {
+        return request
+          .get("/api/articles/1/comments")
+          .expect(200)
+          .then(({ body: { comments } }) => {
+            expect(comments[0]).has.keys(
+              "comment_id",
+              "votes",
+              "created_at",
+              "author",
+              "body"
+            );
+          });
+      });
+      // Queries for end-point /api/articles/:article_id/comments?sort_by=""&order=""
+      describe("Query and relevant tests", () => {
+        // Query 1: sort_by
+        it("GET accepts sort_by query, which sorts articles by any valid column. Order defaults to descending. For ease of this test, ascending order given", () => {
+          const columnOptions = [
+            "comment_id",
+            "votes",
+            "created_at",
+            "author",
+            "body"
+          ];
+          const columnMethods = columnOptions.map(column => {
+            return request
+              .get(`/api/articles/1/comments?sort_by=${column}&order=asc`)
+              .expect(200)
+              .then(({ body: { comments } }) => {
+                expect(comments).to.be.sortedBy(`${column}`);
+              });
+          });
+          return Promise.all(columnMethods);
+        });
+        // Query 2: order
+        it("GET accepts order query. sort_by defaults to created_at", () => {
+          return request
+            .get(`/api/articles/1/comments?order=asc`)
+            .expect(200)
+            .then(({ body: { comments } }) => {
+              expect(comments).to.be.sortedBy("created_at");
+            });
+        });
+        // Use * to.not.be.sortedBy * when order left to default to descending
+        it("Test order defaults to descending", () => {
+          return request
+            .get(`/api/articles/1/comments?sort_by=""&order=""`)
+            .expect(200)
+            .then(({ body: { comments } }) => {
+              expect(comments).to.not.be.sortedBy("created_at");
+            });
+        });
+        // error handling for bad queries
+        it.only("Error handle when unknown alien queries inserted", () => {
+          return request
+            .get(`/api/articles/1/comments?sortBubbles=""`)
+            .get(400)
+            .then(({ body: { msg } }) => {
+              expect(msg).to.equal("Bad request");
+            });
+        });
+      });
+    });
+    // 405: invalid methods for /api/articles/:article_id/comments
+    describe("405 for /api/articles/:article_id/comments", () => {
+      it("Returns error 405 if invalid method requested", () => {
+        const invalidMethods = ["put", "patch", "delete"];
+        const methodPromises = invalidMethods.map(method => {
+          return request[method]("/api/articles/1/comments")
             .expect(405)
             .then(({ body: { msg } }) => {
               expect(msg).to.equal("Method not allowed");
