@@ -372,7 +372,19 @@ describe("/api", () => {
       });
       return Promise.all(queryPromises);
     });
-    // error 405 handler
+    it("Returns articles in default setting should query keys not match pre-allowed options", () => {
+      return request
+        .get("/api/articles?unknownOption=asc")
+        .expect(200)
+        .then(({ body: { articles } }) => {
+          expect(articles).to.be.sortedBy("created_at");
+          expect(articles[0].article_id, articles[11].article_id).to.equal(
+            12,
+            1
+          );
+        });
+    });
+    // 405 handler for end-point /api/articles
     it("405 for invalid methods for end-point /api/articles", () => {
       const invalidMethodList = ["delete", "patch", "put", "post"];
       const methodPromises = invalidMethodList.map(method => {
@@ -383,6 +395,33 @@ describe("/api", () => {
           });
       });
       return Promise.all(methodPromises);
+    });
+  });
+  // end-point: /api/comments/:comment_id
+  describe("End-point: /api/comments/:comment_id", () => {
+    // PATCH
+    describe.only("PATCH /api/comments/:comment_id", () => {
+      it("PATCH successful with 200", () => {
+        return request.patch("/api/comments/1").expect(200);
+      });
+      it("PATCH returns updated comment", () => {
+        const newVote = 2;
+        return request
+          .patch("/api/comments/1")
+          .send({ inc_votes: newVote })
+          .expect(200)
+          .then(({ body: { comment } }) => {
+            expect(comment).to.eql({
+              comment_id: 1,
+              author: "butter_bridge",
+              article_id: 9,
+              votes: 18,
+              created_at: "2017-11-22T12:36:03.000Z",
+              body:
+                "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!"
+            });
+          });
+      });
     });
   });
 });

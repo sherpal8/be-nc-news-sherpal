@@ -52,7 +52,7 @@ exports.updateArticleById = (article_id, inc_votes) => {
     .returning("*");
 };
 
-exports.updateComments = (article_id, username, body) => {
+exports.sendComments = (article_id, username, body) => {
   const objData = {
     author: username,
     body
@@ -81,4 +81,12 @@ exports.retrieveComments = (article_id, sort_by, order) => {
     .from("comments")
     .where({ article_id })
     .orderBy(sortCriteria, orderCriteria);
+};
+
+exports.updatePatchComment = (comment_id, inc_votes) => {
+  return connection
+    .increment("votes", inc_votes)
+    .into("comments")
+    .where({ comment_id })
+    .returning("*");
 };
