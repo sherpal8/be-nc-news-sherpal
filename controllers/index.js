@@ -61,9 +61,6 @@ exports.postComment = (req, res, next) => {
 
   createComment(article_id, username, body)
     .then(([comment]) => {
-      if (!comment) {
-        return Promise.reject({ status: "404", msg: "Page does not exist" });
-      }
       res.status(201).send({ comment });
     })
     .catch(next);

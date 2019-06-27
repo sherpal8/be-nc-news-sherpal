@@ -225,20 +225,20 @@ describe("/api", () => {
       // error handling
       it("400 error if article id is not a number", () => {
         return request
-          .post("/api/articles/b/comments")
+          .post("/api/articles/a/comments")
           .send({ username: "rogersop", body: "hey" })
           .expect(400)
           .then(({ body: { msg } }) => {
             expect(msg).to.equal("Bad request");
           });
       });
-      it("404 returned if article_id does not exist", () => {
+      it("422 returned if article_id does not exist and therefore not processable", () => {
         return request
           .post("/api/articles/100/comments")
           .send({ username: "rogersop", body: "Hey ya'll" })
-          .expect(404)
+          .expect(422)
           .then(({ body: { msg } }) => {
-            expect(msg).to.equal("Page does not exist");
+            expect(msg).to.equal("Unprocessable entity");
           });
       });
     });

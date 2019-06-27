@@ -55,10 +55,11 @@ exports.updateArticleById = (article_id, inc_votes) => {
 exports.createComment = (article_id, username, body) => {
   const objData = {
     author: username,
-    body
+    body,
+    article_id
   };
   return connection
-    .update(objData)
+    .insert(objData)
     .into("comments")
     .where({ article_id })
     .returning("*");
