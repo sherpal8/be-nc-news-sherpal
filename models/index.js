@@ -90,3 +90,9 @@ exports.updatePatchComment = (comment_id, inc_votes) => {
     .where({ comment_id })
     .returning("*");
 };
+
+exports.removeContent = comment_id => {
+  return connection("comments")
+    .where({ comment_id })
+    .delete();
+};

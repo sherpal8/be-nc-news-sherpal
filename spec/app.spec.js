@@ -422,9 +422,18 @@ describe("/api", () => {
       });
     });
     // DELETE
-    describe.only("DELETE /api/comments/:comments_id", () => {
-      it("DELETE successful with status 200", () => {
-        return request.delete("/api/comments/1").expect(200);
+    describe("DELETE /api/comments/:comments_id", () => {
+      it("DELETE successful 204 with no content", () => {
+        return request
+          .delete("/api/comments/1")
+          .expect(204)
+          .then(({ deleteCount }) => {
+            expect(deleteCount).to.equal();
+          });
+      });
+      // Error handling for failed delete i.e. attempting to delete non-existent comments_id
+      it("DELETE not successful", () => {
+        return request.delete("/api/comments/100").expect(404);
       });
     });
     // Invalid methods for /api/comments/:comment_id
