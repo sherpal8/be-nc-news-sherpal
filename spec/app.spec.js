@@ -216,14 +216,10 @@ describe("/api", () => {
           .send({ username: "rogersop", body: "Hey ya'll" })
           .expect(201)
           .then(({ body: { comment } }) => {
-            expect(comment).to.eql({
-              comment_id: 2,
-              author: "rogersop",
-              article_id: 1,
-              votes: 14,
-              created_at: "2016-11-22T12:36:03.000Z",
-              body: "Hey ya'll"
-            });
+            expect(comment.author, comment.body).to.equal(
+              "rogersop",
+              "Hey ya'll"
+            );
           });
       });
       // error handling
@@ -243,15 +239,6 @@ describe("/api", () => {
           .expect(404)
           .then(({ body: { msg } }) => {
             expect(msg).to.equal("Page does not exist");
-          });
-      });
-      xit("422 error if request body object contains unknown alien keys", () => {
-        return request
-          .post("/api/articles/1/comments")
-          .send({ unknownKey1: "rogersop", unknownKey2: "Hey" })
-          .expect(422)
-          .then(({ body: { msg } }) => {
-            expect(msg).to.equal("Unprocessable entity");
           });
       });
     });
@@ -400,7 +387,7 @@ describe("/api", () => {
   // end-point: /api/comments/:comment_id
   describe("End-point: /api/comments/:comment_id", () => {
     // PATCH
-    describe.only("PATCH /api/comments/:comment_id", () => {
+    describe("PATCH /api/comments/:comment_id", () => {
       it("PATCH successful with 200", () => {
         return request.patch("/api/comments/1").expect(200);
       });
@@ -421,6 +408,37 @@ describe("/api", () => {
                 "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!"
             });
           });
+      });
+      // error handler
+      it("Error 400: inappropriate patch value i.e. not a number", () => {
+        const newVote = "b";
+        return request
+          .patch("/api/comments/1")
+          .send({ inc_votes: newVote })
+          .expect(400)
+          .then(({ body: { msg } }) => {
+            expect(msg).to.equal("Bad request");
+          });
+      });
+    });
+    // DELETE
+    describe.only("DELETE /api/comments/:comments_id", () => {
+      it("DELETE successful with status 200", () => {
+        return request.delete("/api/comments/1").expect(200);
+      });
+    });
+    // Invalid methods for /api/comments/:comment_id
+    describe("405", () => {
+      it("Invalid methods for /api/comments/:comment_id", () => {
+        const invalidMethods = ["put", "get", "post"];
+        const methodPromises = invalidMethods.map(method => {
+          return request[method]("/api/comments/1")
+            .expect(405)
+            .then(({ body: { msg } }) => {
+              expect(msg).to.equal("Method not allowed");
+            });
+        });
+        return Promise.all(methodPromises);
       });
     });
   });

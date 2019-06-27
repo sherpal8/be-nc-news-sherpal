@@ -24,9 +24,10 @@ exports.seed = function(knex, Promise) {
       return Promise.all([topicsInsertions, usersInsertions]).then(
         ([topics, users]) => {
           // a signage for number of topics inserted
-          console.log(`${topics.length} topics were inserted`);
+          // console.log(`${topics.length} topics were inserted`);
+
           // a signage for number of users inserted
-          console.log(`${users.length} users were inserted`);
+          // console.log(`${users.length} users were inserted`);
 
           // process articleData with utils function to reformat time
           // to become psql schema compliant
@@ -41,7 +42,7 @@ exports.seed = function(knex, Promise) {
     })
     .then(articleRows => {
       // a signage for number of articles inserted
-      console.log(`${articleRows.length} articles were inserted`);
+      // console.log(`${articleRows.length} articles were inserted`);
 
       // process raw data to fill the appropriate designated columns
       // process time to be sql compliant

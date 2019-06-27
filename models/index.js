@@ -52,7 +52,7 @@ exports.updateArticleById = (article_id, inc_votes) => {
     .returning("*");
 };
 
-exports.sendComments = (article_id, username, body) => {
+exports.createComment = (article_id, username, body) => {
   const objData = {
     author: username,
     body

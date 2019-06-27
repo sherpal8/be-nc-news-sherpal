@@ -3,7 +3,7 @@ const {
   fetchUser,
   fetchArticle,
   updateArticleById,
-  sendComments,
+  createComment,
   retrieveComments,
   updatePatchComment
 } = require("../models");
@@ -58,7 +58,7 @@ exports.postComment = (req, res, next) => {
   const { article_id } = req.params;
   const { username, body } = req.body;
 
-  sendComments(article_id, username, body)
+  createComment(article_id, username, body)
     .then(([comment]) => {
       if (!comment) {
         return Promise.reject({ status: "404", msg: "Page does not exist" });
@@ -93,9 +93,13 @@ exports.getManyArticles = (req, res, next) => {
 exports.patchComment = (req, res, next) => {
   const { comment_id } = req.params;
   const { inc_votes } = req.body;
-  console.log(comment_id, inc_votes);
-  updatePatchComment(comment_id, inc_votes).then(([comment]) => {
-    console.log({ comment });
-    res.status(200).send({ comment });
-  });
+  updatePatchComment(comment_id, inc_votes)
+    .then(([comment]) => {
+      res.status(200).send({ comment });
+    })
+    .catch(next);
+};
+
+exports.deleteComment = (req, res, next) => {
+  res.status(200).send({ msg: "Hi" });
 };
