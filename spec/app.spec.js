@@ -431,7 +431,7 @@ describe("/api", () => {
             expect(deleteCount).to.equal();
           });
       });
-      // Error handling for failed delete i.e. attempting to delete non-existent comments_id
+      // Error handling for failed delete i.e. attempting to delete non-existent comment_id
       it("DELETE not successful", () => {
         return request.delete("/api/comments/100").expect(404);
       });
