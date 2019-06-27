@@ -42,18 +42,6 @@ exports.getArticle = (req, res, next) => {
     .catch(next);
 };
 
-exports.getManyArticles = (req, res, next) => {
-  const { sort_by, order, author, topic } = req.query;
-  fetchArticle(sort_by, order, author, topic)
-    .then(articles => {
-      if (articles.length === 0) {
-        return Promise.reject({ status: "404", msg: "Page does not exist" });
-      }
-      res.status(200).send({ articles });
-    })
-    .catch(next);
-};
-
 exports.patchArticle = (req, res, next) => {
   const { inc_votes } = req.body;
   const { article_id } = req.params;
@@ -85,6 +73,18 @@ exports.getComments = (req, res, next) => {
   retrieveComments(article_id, sort_by, order)
     .then(comments => {
       res.status(200).send({ comments });
+    })
+    .catch(next);
+};
+
+exports.getManyArticles = (req, res, next) => {
+  const { sort_by, order, author, topic } = req.query;
+  fetchArticle(sort_by, order, author, topic)
+    .then(articles => {
+      if (articles.length === 0) {
+        return Promise.reject({ status: "404", msg: "Page does not exist" });
+      }
+      res.status(200).send({ articles });
     })
     .catch(next);
 };

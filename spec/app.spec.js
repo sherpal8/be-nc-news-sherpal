@@ -360,7 +360,29 @@ describe("/api", () => {
           expect(Array.isArray(articles)).to.equal(true);
         });
     });
-    it("GET accepts queries", () => {});
-    xit("405 for invalid methods for /api/articles", () => {});
+    it("GET accepts queries", () => {
+      const queryList = ["author", "topic", "sort_by", "order"];
+      const queryPromises = queryList.map(query => {
+        return request
+          .get(`/api/articles?${query}`)
+          .expect(200)
+          .then(({ body: { articles } }) => {
+            expect(Array.isArray(articles)).to.equal(true);
+          });
+      });
+      return Promise.all(queryPromises);
+    });
+    // error 405 handler
+    it("405 for invalid methods for end-point /api/articles", () => {
+      const invalidMethodList = ["delete", "patch", "put", "post"];
+      const methodPromises = invalidMethodList.map(method => {
+        return request[method]("/api/articles")
+          .expect(405)
+          .then(({ body: { msg } }) => {
+            expect(msg).to.equal("Method not allowed");
+          });
+      });
+      return Promise.all(methodPromises);
+    });
   });
 });
