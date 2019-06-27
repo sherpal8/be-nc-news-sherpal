@@ -11,15 +11,36 @@ exports.fetchUser = username => {
     .where({ username });
 };
 
-exports.fetchArticle = article_id => {
+exports.fetchArticle = (article_id, sort_by, order, author, topic) => {
+  const sortByOptions = [
+    "author",
+    "title",
+    "article_id",
+    "topic",
+    "created_at",
+    "votes",
+    "comment_count"
+  ];
+  const orderOptions = ["asc", "desc"];
+  let sortOption = "created_at";
+  let orderOption = "asc";
+  if (sortByOptions.includes(sort_by)) {
+    sortOption = sort_by;
+  }
+  if (orderOptions.includes(order)) {
+    orderOption = order;
+  }
   return connection
     .select("articles.*")
     .from("articles")
     .leftJoin("comments", "articles.article_id", "comments.article_id")
     .count({ comment_count: "comments.comment_id" })
     .groupBy("articles.article_id")
+    .orderBy(sortOption, orderOption)
     .modify(query => {
       if (article_id) query.where({ "articles.article_id": article_id });
+      if (author) query.where({ "articles.author": author });
+      if (topic) query.where({ "articles.topic": topic });
     });
 };
 

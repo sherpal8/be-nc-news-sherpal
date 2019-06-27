@@ -245,7 +245,7 @@ describe("/api", () => {
             expect(msg).to.equal("Page does not exist");
           });
       });
-      it("422 error if request body object contains unknown alien keys", () => {
+      xit("422 error if request body object contains unknown alien keys", () => {
         return request
           .post("/api/articles/1/comments")
           .send({ unknownKey1: "rogersop", unknownKey2: "Hey" })
@@ -322,12 +322,12 @@ describe("/api", () => {
             });
         });
         // error handling for bad queries
-        it.only("Error handle when unknown alien queries inserted", () => {
+        it("When unknown alien query key inserted i.e. undefined, sort_by defaults to column of created_at", () => {
           return request
-            .get(`/api/articles/1/comments?sortBubbles=""`)
-            .get(400)
-            .then(({ body: { msg } }) => {
-              expect(msg).to.equal("Bad request");
+            .get(`/api/articles/1/comments?sortBubbles=yoyo&order=asc`)
+            .expect(200)
+            .then(({ body: { comments } }) => {
+              expect(comments).to.be.sortedBy("created_at");
             });
         });
       });
@@ -346,5 +346,21 @@ describe("/api", () => {
         return Promise.all(methodPromises);
       });
     });
+  });
+  // end-point: /api/articles
+  describe("End-point: /api/articles", () => {
+    it("GET with 200", () => {
+      return request.get("/api/articles").expect(200);
+    });
+    it("GET returns an array of article objects", () => {
+      return request
+        .get("/api/articles")
+        .expect(200)
+        .then(({ body: { articles } }) => {
+          expect(Array.isArray(articles)).to.equal(true);
+        });
+    });
+    it("GET accepts queries", () => {});
+    xit("405 for invalid methods for /api/articles", () => {});
   });
 });

@@ -4,9 +4,15 @@ const {
   getArticle,
   patchArticle,
   postComment,
-  getComments
+  getComments,
+  getManyArticles
 } = require("../controllers");
 const { errorHandler405 } = require("../errors");
+
+articlesRouter
+  .route("/")
+  .get(getManyArticles)
+  .all(errorHandler405);
 
 articlesRouter
   .route("/:article_id/comments")
