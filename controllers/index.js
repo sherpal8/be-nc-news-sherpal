@@ -13,9 +13,7 @@ const {
 exports.getTopics = (req, res, next) => {
   fetchTopics()
     .then(topics => {
-      let endObject = {};
-      endObject.topics = topics;
-      res.status(200).send({ endObject });
+      res.status(200).send({ topics });
     })
     .catch(next);
 };
@@ -72,6 +70,9 @@ exports.getComments = (req, res, next) => {
   const { sort_by, order } = req.query;
   retrieveComments(article_id, sort_by, order)
     .then(comments => {
+      if (comments.length === 0) {
+        return Promise.reject({ status: "404", msg: "Page does not exist" });
+      }
       res.status(200).send({ comments });
     })
     .catch(next);
@@ -94,6 +95,9 @@ exports.patchComment = (req, res, next) => {
   const { inc_votes } = req.body;
   updatePatchComment(comment_id, inc_votes)
     .then(([comment]) => {
+      if (!comment) {
+        return Promise.reject({ status: "404", msg: "Page does not exist" });
+      }
       res.status(200).send({ comment });
     })
     .catch(next);

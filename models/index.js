@@ -24,7 +24,7 @@ exports.fetchArticle = (article_id, sort_by, order, author, topic) => {
   ];
   const orderOptions = ["asc", "desc"];
   let sortOption = "created_at";
-  let orderOption = "asc";
+  let orderOption = "desc";
   if (sortByOptions.includes(sort_by)) {
     sortOption = sort_by;
   }
@@ -35,7 +35,7 @@ exports.fetchArticle = (article_id, sort_by, order, author, topic) => {
     .select("articles.*")
     .from("articles")
     .leftJoin("comments", "articles.article_id", "comments.article_id")
-    .count({ comment_count: "comments.comment_id" })
+    .count({ comment_count: "comments.article_id" })
     .groupBy("articles.article_id")
     .orderBy(sortOption, orderOption)
     .modify(query => {
@@ -45,7 +45,7 @@ exports.fetchArticle = (article_id, sort_by, order, author, topic) => {
     });
 };
 
-exports.updateArticleById = (article_id, inc_votes) => {
+exports.updateArticleById = (article_id, inc_votes = 0) => {
   return connection
     .increment("votes", inc_votes)
     .into("articles")
@@ -85,7 +85,7 @@ exports.retrieveComments = (article_id, sort_by, order) => {
     .orderBy(sortCriteria, orderCriteria);
 };
 
-exports.updatePatchComment = (comment_id, inc_votes) => {
+exports.updatePatchComment = (comment_id, inc_votes = 0) => {
   return connection
     .increment("votes", inc_votes)
     .into("comments")

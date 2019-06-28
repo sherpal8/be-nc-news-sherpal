@@ -37,7 +37,7 @@ describe("/api", () => {
         return request
           .get("/api/topics")
           .expect(200)
-          .then(({ body: { endObject: { topics } } }) => {
+          .then(({ body: { topics } }) => {
             expect(topics).to.be.an("array");
           });
       });
@@ -45,16 +45,15 @@ describe("/api", () => {
         return request
           .get("/api/topics")
           .expect(200)
-          .then(({ body: { endObject: { topics } } }) => {
+          .then(({ body: { topics } }) => {
             expect(topics[0]).to.contain.keys("slug", "description");
-            expect(topics[0].slug).to.equal("mitch");
           });
       });
       it("Test specific key value", () => {
         return request
           .get("/api/topics")
           .expect(200)
-          .then(({ body: { endObject: { topics } } }) => {
+          .then(({ body: { topics } }) => {
             expect(topics[0].slug).to.equal("mitch");
           });
       });
@@ -186,6 +185,16 @@ describe("/api", () => {
             expect(msg).to.equal("Bad request");
           });
       });
+      it("If vote increment not given, then original vote remains unchanged even if status is 200", () => {
+        const newVote = undefined;
+        return request
+          .patch("/api/articles/1")
+          .send({ inc_votes: newVote })
+          .expect(200)
+          .then(({ body: { article } }) => {
+            expect(article.votes).to.equal(100);
+          });
+      });
     });
     // 405 error handling - invalid methods
     describe("Invalid methods", () => {
@@ -241,6 +250,15 @@ describe("/api", () => {
           .expect(422)
           .then(({ body: { msg } }) => {
             expect(msg).to.equal("Unprocessable entity");
+          });
+      });
+      it("400 returned if POST does not include both keys i.e. username and body", () => {
+        return request
+          .post("/api/articles/1/comments")
+          .send({})
+          .expect(400)
+          .then(({ body: { msg } }) => {
+            expect(msg).to.equal("Bad request");
           });
       });
     });
@@ -311,12 +329,21 @@ describe("/api", () => {
             });
         });
         // error handling for bad queries
-        it("When unknown alien query key inserted i.e. undefined, sort_by defaults to column of created_at", () => {
+        it("When unknown alien query key i.e. undefined, sort_by defaults to column of created_at", () => {
           return request
             .get(`/api/articles/1/comments?sortBubbles=yoyo&order=asc`)
             .expect(200)
             .then(({ body: { comments } }) => {
               expect(comments).to.be.sortedBy("created_at");
+            });
+        });
+        // error 404
+        it("404 when valied article_id entered but does not exist", () => {
+          return request
+            .get(`/api/articles/1000/comments`)
+            .expect(404)
+            .then(({ body: { msg } }) => {
+              expect(msg).to.equal("Page does not exist");
             });
         });
       });
@@ -366,10 +393,10 @@ describe("/api", () => {
         .get("/api/articles?unknownOption=asc")
         .expect(200)
         .then(({ body: { articles } }) => {
-          expect(articles).to.be.sortedBy("created_at");
+          expect(articles).to.not.be.sortedBy("created_at");
           expect(articles[0].article_id, articles[11].article_id).to.equal(
-            12,
-            1
+            1,
+            12
           );
         });
     });
@@ -411,6 +438,24 @@ describe("/api", () => {
             });
           });
       });
+      it("PATCH does not update votes when no value given", () => {
+        const newVote = undefined;
+        return request
+          .patch("/api/comments/1")
+          .send({ inc_votes: newVote })
+          .expect(200)
+          .then(({ body: { comment } }) => {
+            expect(comment).to.eql({
+              comment_id: 1,
+              author: "butter_bridge",
+              article_id: 9,
+              votes: 16,
+              created_at: "2017-11-22T12:36:03.000Z",
+              body:
+                "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!"
+            });
+          });
+      });
       // error handler
       it("Error 400: inappropriate patch value i.e. not a number", () => {
         const newVote = "b";
@@ -420,6 +465,14 @@ describe("/api", () => {
           .expect(400)
           .then(({ body: { msg } }) => {
             expect(msg).to.equal("Bad request");
+          });
+      });
+      it("404 when valid comment_id but is in fact non-existent", () => {
+        return request
+          .patch("/api/comments/1000")
+          .expect(404)
+          .then(({ body: { msg } }) => {
+            expect(msg).to.equal("Page does not exist");
           });
       });
     });
