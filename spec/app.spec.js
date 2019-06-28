@@ -8,6 +8,8 @@ const request = require("supertest")(app);
 const connection = require("../connection");
 chai.use(chaiSorted);
 
+const jsonData = require("../endpoints.json");
+
 describe("/api", () => {
   // 404 when no route found
   it("Error 404 when no route found", () => {
@@ -449,6 +451,34 @@ describe("/api", () => {
         });
         return Promise.all(methodPromises);
       });
+    });
+  });
+  // end-point: /api (for JSON)
+  describe("End-point: /api", () => {
+    // GET /api
+    it("200 with successful GET and JSON object returned is as expected", () => {
+      return request
+        .get("/api")
+        .expect(200)
+        .then(({ body: { endpointsData } }) => {
+          expect(endpointsData).to.eql(jsonData);
+        });
+    });
+    // error handling /api
+    it("404 with wrong end-points", () => {
+      return request.get("/hey").expect(404);
+    });
+    // 405 invalid methods for /api
+    it("Invalid methods for /api", () => {
+      const invalidMethods = ["put", "patch", "delete", "post"];
+      const methodPromises = invalidMethods.map(method => {
+        return request[method]("/api")
+          .expect(405)
+          .then(({ body: { msg } }) => {
+            expect(msg).to.equal("Method not allowed");
+          });
+      });
+      return Promise.all(methodPromises);
     });
   });
 });

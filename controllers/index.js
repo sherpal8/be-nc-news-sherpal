@@ -6,7 +6,8 @@ const {
   createComment,
   retrieveComments,
   updatePatchComment,
-  removeContent
+  removeContent,
+  retrieveJSON
 } = require("../models");
 
 exports.getTopics = (req, res, next) => {
@@ -108,4 +109,9 @@ exports.deleteComment = (req, res, next) => {
       res.status(204).send();
     })
     .catch(next);
+};
+
+exports.getJSON = (req, res, next) => {
+  const endpointsData = retrieveJSON();
+  res.status(200).send({ endpointsData });
 };

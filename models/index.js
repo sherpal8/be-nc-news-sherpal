@@ -1,4 +1,5 @@
 const connection = require("../connection");
+const jsonData = require("../endpoints.json");
 
 exports.fetchTopics = () => {
   return connection.select("*").from("topics");
@@ -96,4 +97,8 @@ exports.removeContent = comment_id => {
   return connection("comments")
     .where({ comment_id })
     .delete();
+};
+
+exports.retrieveJSON = () => {
+  return jsonData;
 };

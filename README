@@ -1,0 +1,16 @@
+Project Title:
+ne-nc-news-sherpal is an application. This application is to retrieve articles and comments from NorthCoders news. It utilises PostGres for access to its secure database.
+
+Prerequisites:
+To get started, install the following as below via npm installation.
+1. pg (postgres)
+2. chai
+3. chai-sorted
+4. mocha
+5. supertest
+6. express
+
+
+Installing:
+
+

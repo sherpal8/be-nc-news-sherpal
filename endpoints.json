@@ -1,27 +1,150 @@
 {
   "GET /api": {
-    "description": "serves up a json representation of all the available endpoints of the api"
+    "description": "Serves up a json representation of all the available endpoints of the api be-nc-news-sherpal"
   },
   "GET /api/topics": {
-    "description": "serves an array of all topics",
+    "description": "Serves an array of all topics",
     "queries": [],
     "exampleResponse": {
       "topics": [{ "slug": "football", "description": "Footie!" }]
     }
   },
-  "GET /api/articles": {
-    "description": "serves an array of all topics",
+  "GET /api/users/username-parametric-end-point": {
+    "description": "Serves a single element array of user object when a parametric of username given",
+    "queries": [],
+    "exampleResponse": {
+      "user": [
+        { "username": "rogersop", "avatar_url": "jedi.com", "name": "paul" }
+      ]
+    }
+  },
+  "GET /api/articles/article_id-parametric-end-point": {
+    "description": "Serves an array of articles object when a parametric of article_id given",
     "queries": ["author", "topic", "sort_by", "order"],
     "exampleResponse": {
       "articles": [
         {
-          "title": "Seafood substitutions are increasing",
-          "topic": "cooking",
-          "author": "weegembump",
-          "body": "Text from the article..",
-          "created_at": 1527695953341
+          "author": "rogersop",
+          "title": "Jedi returns",
+          "article_id": 1,
+          "body": "We are returning home",
+          "topic": "Star fan",
+          "created_at": 1527695953341,
+          "votes": 5,
+          "comment_count": 2
+        },
+        {
+          "author": "sop",
+          "title": "Who returns",
+          "article_id": 1,
+          "body": "We are home",
+          "topic": "Trek fan",
+          "created_at": 1527695955341,
+          "votes": 1,
+          "comment_count": 0
         }
       ]
     }
+  },
+  "PATCH /api/articles/article_id_parametric": {
+    "description": "Returns single element array with article object with change of vote when patch of vote sent",
+    "queries": [],
+    "exampleResponse": {
+      "articles": [
+        {
+          "author": "sop",
+          "title": "Who returns",
+          "article_id": 1,
+          "body": "We are home",
+          "topic": "Trek fan",
+          "created_at": 1527695955341,
+          "votes": 5,
+          "comment_count": 0
+        }
+      ]
+    }
+  },
+  "POST /api/articles/article_id_parametric/comments": {
+    "description": "Returns single element array with comment object with data posted",
+    "queries": [],
+    "exampleResponse": {
+      "comment": [
+        {
+          "comment": "rogersop",
+          "body": "Hey ya'll"
+        }
+      ]
+    }
+  },
+  "GET /api/articles/article_id_parametric/comments": {
+    "description": "Returns articles array with elements of objects of comments",
+    "queries": ["sort_by", "order"],
+    "exampleResponse": {
+      "articles": [
+        {
+          "comment_id": 1,
+          "body": "Hey ya'll",
+          "created_at": 1527695953341,
+          "votes": 2,
+          "author": "roger"
+        },
+        {
+          "comment_id": 2,
+          "body": "Hey",
+          "created_at": 1527696953341,
+          "votes": 0,
+          "author": "jane"
+        }
+      ]
+    }
+  },
+  "GET /api/articles/": {
+    "description": "Serves an array of articles objects",
+    "queries": ["author", "topic", "sort_by", "order"],
+    "exampleResponse": {
+      "articles": [
+        {
+          "author": "rogersop",
+          "title": "Jedi returns",
+          "article_id": 1,
+          "body": "We are returning home",
+          "topic": "Star fan",
+          "created_at": 1527695953341,
+          "votes": 5,
+          "comment_count": 2
+        },
+        {
+          "author": "sop",
+          "title": "Who returns",
+          "article_id": 2,
+          "body": "We are home",
+          "topic": "Trek fan",
+          "created_at": 1527695955341,
+          "votes": 1,
+          "comment_count": 0
+        }
+      ]
+    }
+  },
+  "PATCH /api/comments/comment_id-parametric-end-point": {
+    "description": "PATCHES then serves a single element array of the updated comment as an object",
+    "queries": [],
+    "exampleResponse": {
+      "comment": [
+        {
+          "comment_id": 1,
+          "author": "butter_bridge",
+          "article_id": 9,
+          "votes": 18,
+          "created_at": "2017-11-22T12:36:03.000Z",
+          "body": "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!"
+        }
+      ]
+    }
+  },
+  "DELETE /api/comments/comment_id-parametric-end-point": {
+    "description": "DELETES a specific comment and serves nothing to see",
+    "queries": [],
+    "exampleResponse": []
   }
 }
