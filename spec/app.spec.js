@@ -453,7 +453,7 @@ describe("/api", () => {
       });
     });
   });
-  // end-point: /api (for JSON)
+  // end-point: /api (to retrieve endpoints.json)
   describe("End-point: /api", () => {
     // GET /api
     it("200 with successful GET and JSON object returned is as expected", () => {
