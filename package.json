@@ -2,13 +2,16 @@
   "name": "be-nc-news",
   "version": "1.0.0",
   "description": "bc-nc-news",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
+    "start": "node listen.js",
     "setup-dbs": "psql -f ./db/setup.sql",
     "seed-test": "NODE_ENV=test knex seed:run",
+    "seed-dev": "NODE_ENV=development knex seed:run",
     "mocha-test": "mocha spec/app.spec.js",
     "query": "psql -f query.sql > output.txt",
     "test": "npm run setup-dbs && npm run seed-test && npm run mocha-test && npm run query",
+    "dev": "npm run setup-dbs && npm run seed-dev",
     "test-utils": "mocha spec/utils.spec.js"
   },
   "repository": {
