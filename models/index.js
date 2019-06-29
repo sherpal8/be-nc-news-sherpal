@@ -22,15 +22,11 @@ exports.fetchArticle = (article_id, sort_by, order, author, topic) => {
     "votes",
     "comment_count"
   ];
-  const orderOptions = ["asc", "desc"];
-  let sortOption = "created_at";
-  let orderOption = "desc";
-  if (sortByOptions.includes(sort_by)) {
-    sortOption = sort_by;
-  }
-  if (orderOptions.includes(order)) {
-    orderOption = order;
-  }
+  const orderByOptions = ["asc", "desc"];
+
+  const sortOption = sortByOptions.includes(sort_by) ? sort_by : "created_at";
+  const orderOption = orderByOptions.includes(order) ? order : "desc";
+
   return connection
     .select("articles.*")
     .from("articles")
