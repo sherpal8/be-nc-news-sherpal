@@ -9,7 +9,7 @@ const { errorHandler405 } = require("../errors");
 
 apiRouter
   .route("/")
-  .get(getJSON)
+  .get(getJSON.getJSON)
   .all(errorHandler405);
 
 apiRouter.use("/topics", topicsRouter);

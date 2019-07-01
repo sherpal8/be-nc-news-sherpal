@@ -5,7 +5,7 @@ const { errorHandler405 } = require("../errors");
 
 topicsRouter
   .route("/")
-  .get(getTopics)
+  .get(getTopics.getTopics)
   .all(errorHandler405);
 
 module.exports = { topicsRouter };

@@ -1,12 +1,10 @@
 const express = require("express");
 const articlesRouter = express.Router();
-const {
-  getArticle,
-  patchArticle,
-  postComment,
-  getComments,
-  getManyArticles
-} = require("../controllers");
+const { getArticle } = require("../controllers/getArticleController");
+const { patchArticle } = require("../controllers/patchArticleController");
+const { postComment } = require("../controllers/postCommentController");
+const { getComments } = require("../controllers/getCommentsController");
+const { getManyArticles } = require("../controllers/getManyArticlesController");
 const { errorHandler405 } = require("../errors");
 
 articlesRouter
