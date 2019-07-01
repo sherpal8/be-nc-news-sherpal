@@ -1,6 +1,5 @@
-const { retrieveJSON } = require("../models/retrieveJSONModel");
+const endpointsData = require("../endpoints.json");
 
 exports.getJSON = (req, res, next) => {
-  const endpointsData = retrieveJSON();
   res.status(200).send({ endpointsData });
 };
