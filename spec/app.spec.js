@@ -388,6 +388,14 @@ describe("/api", () => {
       });
       return Promise.all(queryPromises);
     });
+    it("GET accepts queries when specific topic", () => {
+      return request
+        .get(`/api/articles?topic=mitch`)
+        .expect(200)
+        .then(({ body: { articles } }) => {
+          expect(Array.isArray(articles)).to.equal(true);
+        });
+    });
     it("Returns articles in default setting should query keys not match pre-allowed options", () => {
       return request
         .get("/api/articles?unknownOption=asc")
