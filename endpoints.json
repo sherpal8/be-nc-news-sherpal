@@ -57,6 +57,7 @@
   "POST /api/articles/article_id_parametric/comments": {
     "description": "Returns single element array with comment object with data posted",
     "queries": [],
+    "post": [{ "username": "rogersop", "body": "Hey ya'll" }],
     "exampleResponse": {
       "comment": [
         {
