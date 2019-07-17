@@ -19,7 +19,7 @@
     }
   },
   "GET /api/articles/article_id-parametric-end-point": {
-    "description": "Serves an array of articles object when a parametric of article_id given",
+    "description": "Serves a single-element array of articles object when a parametric of article_id given",
     "queries": ["author", "topic", "sort_by", "order"],
     "exampleResponse": {
       "articles": [
@@ -32,16 +32,6 @@
           "created_at": 1527695953341,
           "votes": 5,
           "comment_count": 2
-        },
-        {
-          "author": "sop",
-          "title": "Who returns",
-          "article_id": 1,
-          "body": "We are home",
-          "topic": "Trek fan",
-          "created_at": 1527695955341,
-          "votes": 1,
-          "comment_count": 0
         }
       ]
     }
@@ -70,7 +60,7 @@
     "exampleResponse": {
       "comment": [
         {
-          "comment": "rogersop",
+          "author": "rogersop",
           "body": "Hey ya'll"
         }
       ]
